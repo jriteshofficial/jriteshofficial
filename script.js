@@ -71,7 +71,7 @@ class ParticleSystem {
 class FlowerLeafSystem {
     constructor(containerId) {
         this.container = document.getElementById(containerId);
-        this.leafCount = 15;
+        this.leafCount = 20;
         this.createLeaves();
     }
 
@@ -90,7 +90,7 @@ class FlowerLeafSystem {
             const delay = Math.random() * 5;
             const xOffset = Math.random() * window.innerWidth;
             const rotation = Math.random() * 360;
-            const hue = Math.random() * 60 + 180; // Cyan to blue range
+            const hue = Math.random() * 60 + 180;
 
             leaf.style.left = xOffset + 'px';
             leaf.style.animationDuration = duration + 's';
@@ -212,9 +212,54 @@ class InteractiveRobot {
         this.robot.style.left = this.currentX + 'px';
         this.robot.style.top = this.currentY + 'px';
     }
+}
 
-    animate() {
-        // Robot animations handled by CSS
+// ==================== CUTE DOG MOVEMENT ====================
+class CuteDog {
+    constructor(element) {
+        this.dog = element;
+        this.currentX = Math.random() * (window.innerWidth - 100);
+        this.currentY = Math.random() * (window.innerHeight - 100);
+        this.targetX = this.currentX;
+        this.targetY = this.currentY;
+        this.moving = false;
+
+        this.dog.style.left = this.currentX + 'px';
+        this.dog.style.top = this.currentY + 'px';
+        
+        this.startMovement();
+    }
+
+    startMovement() {
+        setInterval(() => {
+            this.targetX = Math.random() * (window.innerWidth - 100);
+            this.targetY = Math.random() * (window.innerHeight - 100);
+            this.moveToTarget();
+        }, 3000);
+    }
+
+    moveToTarget() {
+        const duration = 2000;
+        const startTime = Date.now();
+        const startX = this.currentX;
+        const startY = this.currentY;
+
+        const move = () => {
+            const elapsed = Date.now() - startTime;
+            const progress = Math.min(elapsed / duration, 1);
+
+            this.currentX = startX + (this.targetX - startX) * progress;
+            this.currentY = startY + (this.targetY - startY) * progress;
+
+            this.dog.style.left = this.currentX + 'px';
+            this.dog.style.top = this.currentY + 'px';
+
+            if (progress < 1) {
+                requestAnimationFrame(move);
+            }
+        };
+
+        move();
     }
 }
 
@@ -240,28 +285,25 @@ function updateUptime() {
 
 // ==================== INITIALIZATION ====================
 document.addEventListener('DOMContentLoaded', () => {
-    // Initialize particle system
     const canvas = document.getElementById('particleCanvas');
     new ParticleSystem(canvas);
 
-    // Initialize falling leaves
     new FlowerLeafSystem('flowerLeavesContainer');
 
-    // Initialize interactive robot
-    const robot = document.getElementById('astroRobot');
+    const robot = document.getElementById('sentinelRobot');
     new InteractiveRobot(robot);
 
-    // Update uptime
+    const dog = document.getElementById('cuteDog');
+    new CuteDog(dog);
+
     updateUptime();
 
-    // Smooth scroll for navigation
     document.querySelectorAll('.nav-link').forEach(link => {
         link.addEventListener('click', (e) => {
             e.preventDefault();
         });
     });
 
-    // Button hover effects
     document.querySelectorAll('.action-btn, .download-btn, .social-icon').forEach(btn => {
         btn.addEventListener('mouseenter', function() {
             this.style.transform = 'scale(1.05)';
@@ -272,13 +314,11 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Terminal animations
     const terminalLines = document.querySelectorAll('.terminal-line');
     terminalLines.forEach((line, index) => {
         line.style.animationDelay = `${index * 0.1}s`;
     });
 
-    // Interactive arsenal items
     document.querySelectorAll('.arsenal-item').forEach(item => {
         item.addEventListener('mouseenter', function() {
             this.style.transform = 'translateY(-8px) scale(1.05)';
@@ -289,7 +329,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Panel animations on scroll
     const observerOptions = {
         threshold: 0.1,
         rootMargin: '0px 0px -50px 0px'
@@ -311,7 +350,6 @@ document.addEventListener('DOMContentLoaded', () => {
         observer.observe(element);
     });
 
-    // Keyboard shortcuts
     document.addEventListener('keydown', (e) => {
         if (e.altKey && e.key === 't') {
             e.preventDefault();
@@ -319,6 +357,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    console.log('🚀 ASTRO X System initialized successfully!');
-    console.log('🤖 Drag the robot around! 🌸 Watch the flower leaves fall!');
+    console.log('🚀 SENTINEL-X System initialized successfully!');
+    console.log('🤖 Drag the robot around! 🐕 Watch K9 run! 🌸 Enjoy the falling flowers!');
 });
